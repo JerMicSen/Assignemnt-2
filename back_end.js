@@ -49,10 +49,40 @@ function addNewListItem(req) {
     const updatedUser = await todoListModel.updateOne({user: currentUser.user}, {todoList: user.todoList});
 }
 
+/*
+ * removes a given list item
+ */
 function removeListItem(req) {
     const todoIndex = user.todoList.indexOf(req.body.todo);
     user.todoList.splice(todoIndex, 1);
     const updateUser = await todoListModel.updateOne({user: currentUser.user}, {todoList: usertodoList});
+}
+
+/*
+ *sends the users data
+ */
+function getUsersTodoList(req, res) {
+    getUser(req);
+    res.json({
+        todoList: currentUser.todoList
+    });
+}
+
+/*
+ * Change or update a lists item
+ */
+function updateListItem(req) {
+    const listItemIndex = currentUser.todoList.indexOf(req.body.oldTodo);
+    currentUser.todoList[listItemIndex] = req.body.newTodo;
+
+    const todoIndex = await todoListModel.updateOne(
+        {
+            user: currentUser.user,
+        },
+        {
+            todoList: currentUser.todoList
+        }
+    );
 }
 
 
@@ -62,6 +92,7 @@ function removeListItem(req) {
 
 app.listen(3000, () => console.log('server up on :3000')); // Set up the server
 
-app.post("/newUser", getUser(req));
+app.post("/newUser", herUsersTodoList(req, res));
 app.post("/newListItem", addNewListItem(req));
 app.post("/deleteListItem", removeListItem(req));
+app.post("/updateListItem", updateListItem(req));
