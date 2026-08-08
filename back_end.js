@@ -1,8 +1,6 @@
 const express = require("express"); // Import express
 const mongoose = require("mongoose");
 const app = express(); // Set up express.js
-let data;
-let currentUser;
 
 
 
@@ -18,8 +16,12 @@ mongoose.connect("mongodb+srv://seni0028_db_user:MkhSeyBxTy7PNSe8@assignment2.nc
 
 // Set up the structure of the data.
 const userListSchema = new mongoose.Schema({
-    user: {type: String, required: true},
-    todoList: [String]
+    userName: {type: String, required: true},
+    title: {type: String, required: true},
+    description: String,
+    dueDate: Date,
+    priority: {type: Number, required: true},
+    status: {Boolean, required: true}
 });
 const todoListModel = new mongoose.model("todo list", userListSchema);
 
@@ -31,56 +33,58 @@ const todoListModel = new mongoose.model("todo list", userListSchema);
 /* Adds a new user.
  * req must have in its body a field called userName
  */
-function getUser(req) {
-    // Check if a user of the name already exists
-    const user = await todoListModel.findOne({user: req.body.userName});
-    if (users != null) {
-        currentUser = users;
-    } else {
-        // Add the user to the database
-        currentUser = await todoListModel.create({user: req.body.userName});
-    }
+function getUser(req, res) {
+    const userTodoList = await todoListModel.find({
+        userName: req.body.userName
+    });
+    res.json({
+        todoListOfUser: userTodoList
+    });
 }
 
 // Add a new list item
 // req must have a field in it's body called todo, which is a string containing the todo item.
 function addNewListItem(req) {
-    user.todoList.push(req.body.todo);
-    const updatedUser = await todoListModel.updateOne({user: currentUser.user}, {todoList: user.todoList});
+    const newListItem = await todoListModel.create({
+        userName: req.body.userName,
+        title: req.body.title,
+        description: req.body.description,
+        dueDate: req.body.dueDate,
+        priotity: req.body.priotity,
+        status: req.body.status
+    });
 }
 
 /*
  * removes a given list item
  */
-function removeListItem(req) {
-    const todoIndex = user.todoList.indexOf(req.body.todo);
-    user.todoList.splice(todoIndex, 1);
-    const updateUser = await todoListModel.updateOne({user: currentUser.user}, {todoList: usertodoList});
-}
-
-/*
- *sends the users data
- */
-function getUsersTodoList(req, res) {
-    getUser(req);
-    res.json({
-        todoList: currentUser.todoList
-    });
+function removeListItem(req, name) {
+    const deletedItem = await todoListModel.deleteOne(
+        {
+            userName: req.body.userName,
+            title: req.body.title,
+            description: req.body.description
+        }
+    )
 }
 
 /*
  * Change or update a lists item
  */
 function updateListItem(req) {
-    const listItemIndex = currentUser.todoList.indexOf(req.body.oldTodo);
-    currentUser.todoList[listItemIndex] = req.body.newTodo;
-
-    const todoIndex = await todoListModel.updateOne(
+    const newListItem = await todoListModel.updateOne(
         {
-            user: currentUser.user,
+            userName: req.body.userName,
+            title: req.body.oldTitle,
+            description: req.body.oldDescription
         },
         {
-            todoList: currentUser.todoList
+            userName: req.body.newUserName,
+            title: req.body.newTitle,
+            description: req.body.newDescription,
+            dueDate: req.body.newDueDate,
+            priority: req.body.newPriority,
+            status: req.body.newStatus
         }
     );
 }
