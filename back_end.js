@@ -45,7 +45,14 @@ function getUser(req) {
 // Add a new list item
 // req must have a field in it's body called todo, which is a string containing the todo item.
 function addNewListItem(req) {
-    const updatedUser = await todoListModel.updateOne({user: currentUser.user}, {todoList: (user.todoList.push(req.body.todo))});
+    user.todoList.push(req.body.todo);
+    const updatedUser = await todoListModel.updateOne({user: currentUser.user}, {todoList: user.todoList});
+}
+
+function removeListItem(req) {
+    const todoIndex = user.todoList.indexOf(req.body.todo);
+    user.todoList.splice(todoIndex, 1);
+    const updateUser = await todoListModel.updateOne({user: currentUser.user}, {todoList: usertodoList});
 }
 
 
@@ -54,3 +61,7 @@ function addNewListItem(req) {
 
 
 app.listen(3000, () => console.log('server up on :3000')); // Set up the server
+
+app.post("/newUser", getUser(req));
+app.post("/newListItem", addNewListItem(req));
+app.post("/deleteListItem", removeListItem(req));
