@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h2 Edit Task
+
+  form(action="/tasks/edit" method="POST")
+    label(for="title") Title
+    input(type="text" name="title" id="title" required)
+
+    label(for="description") Description
+    input(type="text" name="description" id="description" required)
+
+    label(for="dueDate") Due Date
+    input(type="date" name="dueDate" id="dueDate")
+
+    label(for="priority") Priority
+    select(name="priority" id="priority")
+      option(value="Low") Low
+      option(value="Medium") Medium
+      option(value="High") High
+
+    label(for="status") Status
+    select(name="status" id="status")
+      option(value="Pending") Pending
+      option(value="Completed") Completed
+
+    button(type="submit") Save Changes
