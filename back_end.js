@@ -1,10 +1,13 @@
 const express = require("express"); // Import express
 const mongoose = require("mongoose");
 const app = express(); // Set up express.js
+app.set('view engine', 'pug');
 
 
 
-
+app.get('/', (req, res) => {
+    res.render("layout", )
+})
 
 // Connect to mongoose
 mongoose.connect("mongodb+srv://seni0028_db_user:MkhSeyBxTy7PNSe8@assignment2.ncyx0hl.mongodb.net")
@@ -20,8 +23,8 @@ const userListSchema = new mongoose.Schema({
     title: {type: String, required: true},
     description: String,
     dueDate: Date,
-    priority: {type: Number, required: true},
-    status: {Boolean, required: true}
+    priority: {type: String, required: true},
+    status: {type: Boolean, required: true}
 });
 const todoListModel = new mongoose.model("todo list", userListSchema);
 
@@ -34,7 +37,7 @@ const todoListModel = new mongoose.model("todo list", userListSchema);
  * req must have in its body a field called userName
  */
 function getUser(req, res) {
-    const userTodoList = await todoListModel.find({
+    const userTodoList = todoListModel.find({
         userName: req.body.userName
     });
     res.json({
@@ -45,7 +48,7 @@ function getUser(req, res) {
 // Add a new list item
 // req must have a field in it's body called todo, which is a string containing the todo item.
 function addNewListItem(req) {
-    const newListItem = await todoListModel.create({
+    const newListItem = todoListModel.create({
         userName: req.body.userName,
         title: req.body.title,
         description: req.body.description,
@@ -58,8 +61,8 @@ function addNewListItem(req) {
 /*
  * removes a given list item
  */
-function removeListItem(req, name) {
-    const deletedItem = await todoListModel.deleteOne(
+function removeListItem(req) {
+    const deletedItem = todoListModel.deleteOne(
         {
             userName: req.body.userName,
             title: req.body.title,
@@ -72,14 +75,14 @@ function removeListItem(req, name) {
  * Change or update a lists item
  */
 function updateListItem(req) {
-    const newListItem = await todoListModel.updateOne(
+    const newListItem = todoListModel.updateOne(
         {
             userName: req.body.userName,
             title: req.body.oldTitle,
             description: req.body.oldDescription
         },
         {
-            userName: req.body.newUserName,
+            userName: req.body.userName,
             title: req.body.newTitle,
             description: req.body.newDescription,
             dueDate: req.body.newDueDate,
@@ -96,7 +99,10 @@ function updateListItem(req) {
 
 app.listen(3000, () => console.log('server up on :3000')); // Set up the server
 
-app.post("/newUser", herUsersTodoList(req, res));
-app.post("/newListItem", addNewListItem(req));
-app.post("/deleteListItem", removeListItem(req));
-app.post("/updateListItem", updateListItem(req));
+app.get("/", (req, res) => {
+    res.render("layout");
+})
+app.post("/newUser", getUser);
+app.post("/newListItem", addNewListItem);
+app.post("/deleteListItem", removeListItem);
+app.post("/updateListItem", updateListItem);
