@@ -3,10 +3,16 @@ extends layout
 block content
   h2 Task Details
 
-  p Title: Task title
-  p Description: Task description
-  p Due Date: Task due date
-  p Priority: Task priority
-  p Status: Task status
+  .task
+    h3= task.title
+    p Description: #{task.description}
+    p Due Date: #{task.dueDate}
+    p Priority: #{task.priority}
 
-  a(href="/tasks") Back to Tasks
+    if task.status
+      p Status: Completed
+    else
+      p Status: Pending
+
+  a(href="/") Back to Tasks
+  a(href="/tasks/edit/" + task._id) Edit Task

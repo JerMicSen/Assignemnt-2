@@ -3,7 +3,17 @@ html
   head
     title Todo List
     link(rel="stylesheet" href="/css/style.css")
-  body
-    h1 Todo List
 
-    block content
+  body
+    header
+      h1 Todo List
+
+      nav
+        a(href="/") Home
+        a(href="/tasks/add") Add Task
+
+    main
+      block content
+
+    footer
+      p Todo List Assignment

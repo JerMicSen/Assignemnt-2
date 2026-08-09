@@ -5,4 +5,33 @@ block content
 
   a(href="/tasks/add") Add New Task
 
-  p Your tasks will appear here.
+  if todoListOfUser && todoListOfUser.length > 0
+    each task in todoListOfUser
+      .task
+        h3= task.title
+        p Description: #{task.description}
+        p Due Date: #{task.dueDate}
+        p Priority: #{task.priority}
+
+        if task.status
+          p Status: Completed
+        else
+          p Status: Pending
+
+        a(href="/tasks/details/" + task._id) View
+
+        a(href="/tasks/edit/" + task._id) Edit
+
+        form(
+          action="/deleteListItem"
+          method="POST"
+          onsubmit="return confirm('Are you sure you want to delete this task?')"
+        )
+          input(type="hidden" name="userName" value=task.userName)
+          input(type="hidden" name="title" value=task.title)
+          input(type="hidden" name="description" value=task.description)
+
+          button(type="submit") Delete
+
+  else
+    p No tasks found.

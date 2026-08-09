@@ -3,25 +3,28 @@ extends layout
 block content
   h2 Add New Task
 
-  form(action="/tasks/add" method="POST")
+  form(action="/newListItem" method="POST")
+    label(for="userName") User Name
+    input(type="text" name="userName" id="userName" required)
+
     label(for="title") Title
     input(type="text" name="title" id="title" required)
 
     label(for="description") Description
-    input(type="text" name="description" id="description" required)
+    input(type="text" name="description" id="description")
 
     label(for="dueDate") Due Date
     input(type="date" name="dueDate" id="dueDate")
 
     label(for="priority") Priority
-    select(name="priority" id="priority")
+    select(name="priority" id="priority" required)
       option(value="Low") Low
       option(value="Medium") Medium
       option(value="High") High
 
     label(for="status") Status
     select(name="status" id="status")
-      option(value="Pending") Pending
-      option(value="Completed") Completed
+      option(value="false") Pending
+      option(value="true") Completed
 
     button(type="submit") Add Task

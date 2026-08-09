@@ -3,25 +3,46 @@ extends layout
 block content
   h2 Edit Task
 
-  form(action="/tasks/edit" method="POST")
-    label(for="title") Title
-    input(type="text" name="title" id="title" required)
+  form(action="/updateListItem" method="POST")
+    input(type="hidden" name="userName" value=task.userName)
+    input(type="hidden" name="oldTitle" value=task.title)
+    input(type="hidden" name="oldDescription" value=task.description)
 
-    label(for="description") Description
-    input(type="text" name="description" id="description" required)
+    label(for="newTitle") Title
+    input(
+      type="text"
+      name="newTitle"
+      id="newTitle"
+      value=task.title
+      required
+    )
 
-    label(for="dueDate") Due Date
-    input(type="date" name="dueDate" id="dueDate")
+    label(for="newDescription") Description
+    input(
+      type="text"
+      name="newDescription"
+      id="newDescription"
+      value=task.description
+    )
 
-    label(for="priority") Priority
-    select(name="priority" id="priority")
-      option(value="Low") Low
-      option(value="Medium") Medium
-      option(value="High") High
+    label(for="newDueDate") Due Date
+    input(
+      type="date"
+      name="newDueDate"
+      id="newDueDate"
+    )
 
-    label(for="status") Status
-    select(name="status" id="status")
-      option(value="Pending") Pending
-      option(value="Completed") Completed
+    label(for="newPriority") Priority
+    select(name="newPriority" id="newPriority" required)
+    option(value="Low" selected=task.priority === "Low") Low
+    option(value="Medium" selected=task.priority === "Medium") Medium
+    option(value="High" selected=task.priority === "High") High
+
+    label(for="newStatus") Status
+    select(name="newStatus" id="newStatus")
+    option(value="false" selected=!task.status) Pending
+    option(value="true" selected=task.status) Completed
 
     button(type="submit") Save Changes
+
+  a(href="/") Cancel
