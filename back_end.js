@@ -2,12 +2,9 @@ const express = require("express"); // Import express
 const mongoose = require("mongoose");
 const app = express(); // Set up express.js
 app.set('view engine', 'pug');
+app.use(express.urlencoded({ extended: true }));
 
 
-
-app.get('/', (req, res) => {
-    res.render("layout", )
-})
 
 // Connect to mongoose
 mongoose.connect("mongodb+srv://seni0028_db_user:MkhSeyBxTy7PNSe8@assignment2.ncyx0hl.mongodb.net")
@@ -102,6 +99,15 @@ app.listen(3000, () => console.log('server up on :3000')); // Set up the server
 app.get("/", (req, res) => {
     res.render("layout");
 })
+app.get("/tasks/add", (req, res) => {
+    res.render("add");
+});
+app.get("/tasks/details/:id", (req, res) => {
+    res.render("details");
+});
+app.get("/tasks/edit/:id", (req, res) => {
+    res.render("edit");
+});
 app.post("/newUser", getUser);
 app.post("/newListItem", addNewListItem);
 app.post("/deleteListItem", removeListItem);
