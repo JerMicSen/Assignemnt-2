@@ -1,3 +1,11 @@
+/*
+ * Authors: Sharmarke Hasan and Jerome Seniuk
+ * Todo List Assignment
+ *
+ * Front End: Sharmarke Hasan
+ * Back End: Jerome Seniuk
+ */
+
 require("dotenv").config({ path: "atlas-credentials.env" });
 const express = require("express"); // Import express
 const mongoose = require("mongoose");
