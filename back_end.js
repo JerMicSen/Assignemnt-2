@@ -1,13 +1,15 @@
+require("dotenv").config({ path: "atlas-credentials.env" });
 const express = require("express"); // Import express
 const mongoose = require("mongoose");
 const app = express(); // Set up express.js
 app.set('view engine', 'pug');
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 
 
 // Connect to mongoose
-mongoose.connect("mongodb+srv://seni0028_db_user:MkhSeyBxTy7PNSe8@assignment2.ncyx0hl.mongodb.net")
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("Database connected successfully"))
     .catch((err) => {
         console.log("An error occured when attempting to connect to the database!");
@@ -33,46 +35,61 @@ const todoListModel = new mongoose.model("todo list", userListSchema);
 /* Adds a new user.
  * req must have in its body a field called userName
  */
-function getUser(req, res) {
-    const userTodoList = todoListModel.find({
+async function getUser(req, res) {
+    const userTodoList = await todoListModel.find({
         userName: req.body.userName
     });
-    res.json({
+
+    res.render("index", {
         todoListOfUser: userTodoList
     });
 }
 
 // Add a new list item
 // req must have a field in it's body called todo, which is a string containing the todo item.
-function addNewListItem(req) {
-    const newListItem = todoListModel.create({
+async function addNewListItem(req, res) {
+    await todoListModel.create({
         userName: req.body.userName,
         title: req.body.title,
         description: req.body.description,
         dueDate: req.body.dueDate,
-        priotity: req.body.priotity,
+        priority: req.body.priority,
         status: req.body.status
+    });
+
+    const userTodoList = await todoListModel.find({
+        userName: req.body.userName
+    });
+
+    res.render("index", {
+        todoListOfUser: userTodoList
     });
 }
 
 /*
  * removes a given list item
  */
-function removeListItem(req) {
-    const deletedItem = todoListModel.deleteOne(
-        {
-            userName: req.body.userName,
-            title: req.body.title,
-            description: req.body.description
-        }
-    )
+async function removeListItem(req, res) {
+    await todoListModel.deleteOne({
+        userName: req.body.userName,
+        title: req.body.title,
+        description: req.body.description
+    });
+
+    const userTodoList = await todoListModel.find({
+        userName: req.body.userName
+    });
+
+    res.render("index", {
+        todoListOfUser: userTodoList
+    });
 }
 
 /*
  * Change or update a lists item
  */
-function updateListItem(req) {
-    const newListItem = todoListModel.updateOne(
+async function updateListItem(req, res) {
+    await todoListModel.updateOne(
         {
             userName: req.body.userName,
             title: req.body.oldTitle,
@@ -87,6 +104,14 @@ function updateListItem(req) {
             status: req.body.newStatus
         }
     );
+
+    const userTodoList = await todoListModel.find({
+        userName: req.body.userName
+    });
+
+    res.render("index", {
+        todoListOfUser: userTodoList
+    });
 }
 
 
@@ -97,16 +122,26 @@ function updateListItem(req) {
 app.listen(3000, () => console.log('server up on :3000')); // Set up the server
 
 app.get("/", (req, res) => {
-    res.render("layout");
-})
+    res.render("index", {
+        todoListOfUser: []
+    });
+});
 app.get("/tasks/add", (req, res) => {
     res.render("add");
 });
-app.get("/tasks/details/:id", (req, res) => {
-    res.render("details");
+app.get("/tasks/details/:id", async (req, res) => {
+    const task = await todoListModel.findById(req.params.id);
+
+    res.render("details", {
+        task: task
+    });
 });
-app.get("/tasks/edit/:id", (req, res) => {
-    res.render("edit");
+app.get("/tasks/edit/:id", async (req, res) => {
+    const task = await todoListModel.findById(req.params.id);
+
+    res.render("edit", {
+        task: task
+    });
 });
 app.post("/newUser", getUser);
 app.post("/newListItem", addNewListItem);
