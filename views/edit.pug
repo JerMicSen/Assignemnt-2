@@ -9,39 +9,24 @@ block content
     input(type="hidden" name="oldDescription" value=task.description)
 
     label(for="newTitle") Title
-    input(
-      type="text"
-      name="newTitle"
-      id="newTitle"
-      value=task.title
-      required
-    )
+    input(type="text" name="newTitle" id="newTitle" value=task.title required)
 
     label(for="newDescription") Description
-    input(
-      type="text"
-      name="newDescription"
-      id="newDescription"
-      value=task.description
-    )
+    input(type="text" name="newDescription" id="newDescription" value=task.description)
 
     label(for="newDueDate") Due Date
-    input(
-      type="date"
-      name="newDueDate"
-      id="newDueDate"
-    )
+    input(type="date" name="newDueDate" id="newDueDate")
 
     label(for="newPriority") Priority
     select(name="newPriority" id="newPriority" required)
-    option(value="Low" selected=task.priority === "Low") Low
-    option(value="Medium" selected=task.priority === "Medium") Medium
-    option(value="High" selected=task.priority === "High") High
+      option(value="Low" selected=task.priority === "Low") Low
+      option(value="Medium" selected=task.priority === "Medium") Medium
+      option(value="High" selected=task.priority === "High") High
 
     label(for="newStatus") Status
     select(name="newStatus" id="newStatus")
-    option(value="false" selected=!task.status) Pending
-    option(value="true" selected=task.status) Completed
+      option(value="false" selected=!task.status) Pending
+      option(value="true" selected=task.status) Completed
 
     button(type="submit") Save Changes
 
